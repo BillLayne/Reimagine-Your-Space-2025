@@ -4,7 +4,7 @@ import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { ImageDisplay } from './components/ImageDisplay';
 import { ControlsPanel } from './components/ControlsPanel';
-import { fileToBase64, getImageDimensions } from './utils/fileUtils';
+import { fileToBase64, getImageDimensions, resizeFurnitureImage } from './utils/fileUtils';
 import { editImage, enhancePrompt, getStyleSuggestions, generateVideo, parsePromptToTasks, refineImage, integrateFurniture, enhanceFurniturePrompt } from './services/geminiService';
 import { ImageData, StyleSuggestion, ParsedTask } from './types';
 import { ConfirmationModal } from './components/ConfirmationModal';
@@ -224,7 +224,9 @@ const App: React.FC = () => {
     setRefinementMask(null);
 
     try {
-      const result = await integrateFurniture(currentImage, furnitureImages, furniturePrompt);
+      // Resize furniture images on the client before sending to the backend
+      const resizedFurniture = await Promise.all(furnitureImages.map(resizeFurnitureImage));
+      const result = await integrateFurniture(currentImage, resizedFurniture, furniturePrompt);
       setGeneratedImage(result);
       // Clear furniture images and prompt after successful integration
       setFurnitureImages([]);
@@ -268,6 +270,7 @@ const App: React.FC = () => {
     setError(null);
 
     const onProgress = (message: string) => {
+      // This is a simple logger, you could update state to show progress in the UI
       console.log(`Video Progress: ${message}`);
     };
 

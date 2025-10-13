@@ -35,3 +35,33 @@ export const getImageDimensions = (imageData: ImageData): Promise<{ width: numbe
     img.src = `data:${imageData.mimeType};base64,${imageData.data}`;
   });
 };
+
+/**
+ * Resizes an image to a maximum dimension, preserving aspect ratio.
+ * This helps the AI understand that these are smaller "reference" items.
+ */
+export const resizeFurnitureImage = (imgData: ImageData): Promise<ImageData> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          return reject(new Error("Could not get canvas context"));
+        }
+
+        const maxSize = 512; // Max width or height
+        const scale = Math.min(maxSize / img.width, maxSize / img.height);
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        const resizedDataUrl = canvas.toDataURL(imgData.mimeType);
+        const [, resizedData] = resizedDataUrl.split(',');
+        resolve({ data: resizedData, mimeType: imgData.mimeType });
+      };
+      img.onerror = (err) => reject(err);
+      img.src = `data:${imgData.mimeType};base64,${imgData.data}`;
+    });
+  };
