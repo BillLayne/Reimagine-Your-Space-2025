@@ -67,7 +67,7 @@ export default async (req: Request, context: Context) => {
                         thinkingConfig: { thinkingBudget: 0 },
                     },
                 });
-                data = JSON.parse(response.text.trim());
+                data = JSON.parse(response.text.trim() || '[]');
                 break;
             }
             case 'enhancePrompt': {
