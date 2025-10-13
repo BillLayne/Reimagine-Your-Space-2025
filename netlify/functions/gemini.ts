@@ -19,14 +19,19 @@ export default async (req: Request, context: Context) => {
     }
     
     try {
-        // Moved API Key check and AI client initialization inside the handler
-        const API_KEY = process.env.API_KEY;
+        // Check for API key in environment variables (supports both naming conventions)
+        const API_KEY = process.env.API_KEY || process.env.GEMINI_API_KEY;
+        
         if (!API_KEY) {
-          throw new Error("The API_KEY is not configured. Please add it to your Netlify environment variables and redeploy the site.");
+          console.error("API Key missing. Available env vars:", Object.keys(process.env).filter(k => k.includes('API') || k.includes('GEMINI')));
+          throw new Error("The API_KEY or GEMINI_API_KEY is not configured. Please add it to your Netlify environment variables and redeploy the site.");
         }
+        
+        console.log("API Key found, initializing Google AI...");
         const ai = new GoogleGenAI({ apiKey: API_KEY });
 
         const { action, payload } = await req.json();
+        console.log(`Processing action: ${action}`);
         let data;
 
         switch (action) {
@@ -160,6 +165,7 @@ export default async (req: Request, context: Context) => {
                 throw new Error(`Unknown action: ${action}`);
         }
 
+        console.log(`Action ${action} completed successfully`);
         return new Response(JSON.stringify(data), { headers });
     } catch(error) {
         console.error(`Error in action:`, error);
