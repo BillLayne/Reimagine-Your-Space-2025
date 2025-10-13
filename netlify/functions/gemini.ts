@@ -49,7 +49,13 @@ export default async (req: Request, context: Context) => {
                         thinkingConfig: { thinkingBudget: 0 },
                     },
                 });
-                data = JSON.parse(response.text.trim() || '[]');
+                try {
+                    const rawText = response.text.trim();
+                    data = rawText ? JSON.parse(rawText) : [];
+                } catch (e) {
+                    console.error("Failed to parse tasks JSON:", e, "Raw response:", response.text);
+                    data = []; // Fallback to an empty array on parsing error
+                }
                 break;
             }
             case 'getStyleSuggestions': {
@@ -67,7 +73,13 @@ export default async (req: Request, context: Context) => {
                         thinkingConfig: { thinkingBudget: 0 },
                     },
                 });
-                data = JSON.parse(response.text.trim() || '[]');
+                try {
+                    const rawText = response.text.trim();
+                    data = rawText ? JSON.parse(rawText) : [];
+                } catch (e) {
+                    console.error("Failed to parse style suggestions JSON:", e, "Raw response:", response.text);
+                    data = []; // Fallback to an empty array on parsing error
+                }
                 break;
             }
             case 'enhancePrompt': {
