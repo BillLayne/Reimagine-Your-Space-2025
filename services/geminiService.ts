@@ -1,7 +1,7 @@
 import { ImageData, StyleSuggestion, ParsedTask } from "../types";
 
 async function callApi<T>(action: string, payload: object): Promise<T> {
-  const response = await fetch(`/.netlify/edge-functions/gemini`, {
+  const response = await fetch(`/api/gemini`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export async function generateVideo(
   const { downloadLink } = await callApi<{ downloadLink: string }>('generateVideo_getLink', { operation });
   
   onProgress("Downloading the video file...");
-  const response = await fetch('/.netlify/edge-functions/gemini', {
+  const response = await fetch('/api/gemini', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'generateVideo_download', payload: { link: downloadLink } })

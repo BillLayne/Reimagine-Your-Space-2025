@@ -9,9 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "lambda-multipart-parser": "^1.0.1",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "@netlify/functions": "^4.3.0"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
