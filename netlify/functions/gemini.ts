@@ -2,13 +2,6 @@ import { GoogleGenAI, Modality, Type } from "https://aistudiocdn.com/@google/gen
 import type { Context } from "@netlify/functions";
 import { ImageData, StyleSuggestion, ParsedTask } from "../../types.ts";
 
-// Fix: Use process.env to access environment variables, as per guidelines and to resolve 'Deno' not found error.
-const API_KEY = process.env.API_KEY;
-if (!API_KEY) {
-  throw new Error("API_KEY environment variable is not set.");
-}
-const ai = new GoogleGenAI({ apiKey: API_KEY });
-
 // This is the main handler for all API requests from the frontend.
 export default async (req: Request, context: Context) => {
     const headers = {
@@ -26,6 +19,13 @@ export default async (req: Request, context: Context) => {
     }
     
     try {
+        // Moved API Key check and AI client initialization inside the handler
+        const API_KEY = process.env.API_KEY;
+        if (!API_KEY) {
+          throw new Error("The API_KEY is not configured. Please add it to your Netlify environment variables and redeploy the site.");
+        }
+        const ai = new GoogleGenAI({ apiKey: API_KEY });
+
         const { action, payload } = await req.json();
         let data;
 
