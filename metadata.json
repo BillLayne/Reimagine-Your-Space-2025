@@ -1,0 +1,5 @@
+{
+  "name": "Room Shaper for Netlify",
+  "description": "An AI-powered home improvement application. Upload a photo of a room, describe your desired changes (like wall color or furniture swaps), and our AI will generate a new version of your room, keeping the original layout intact.",
+  "requestFramePermissions": []
+}
